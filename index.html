@@ -17,6 +17,7 @@
       --blue: #2f80ed;
       --red: #eb5757;
       --green: #27ae60;
+      --shot: #ff3b30;
       --yellow: #f2c94c;
     }
 
@@ -373,6 +374,12 @@
       height: 6px;
     }
 
+    .arrow.shot {
+      background: var(--shot);
+      height: 7px;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, .28);
+    }
+
     .arrow::after {
       content: "";
       position: absolute;
@@ -387,6 +394,7 @@
     }
 
     .arrow.dribble::after { border-left-color: var(--green); }
+    .arrow.shot::after { border-left-color: var(--shot); }
 
     .label {
       position: absolute;
@@ -479,7 +487,7 @@
     <aside>
       <div class="brand">
         <h1>REVIEW BOARD</h1>
-        <span class="tag">v0.2</span>
+        <span class="tag">v0.3</span>
       </div>
 
       <div class="section">
@@ -489,10 +497,6 @@
             動画を選択
             <input id="videoInput" type="file" accept="video/*">
           </label>
-          <div class="url-load">
-            <input id="videoUrl" type="url" inputmode="url" placeholder="動画URL / PULSE ECHOの直リンク">
-            <button id="loadUrl" type="button">読込</button>
-          </div>
           <div class="video-box">
             <video id="video" controls playsinline></video>
           </div>
@@ -517,6 +521,7 @@
             <button id="addBall" type="button">ボール</button>
             <button id="arrowTool" type="button">パス矢印</button>
             <button id="dribbleTool" type="button">ドリブル</button>
+            <button id="shotTool" type="button">シュート</button>
             <button id="addLabel" type="button">メモ</button>
             <button id="deleteSelected" type="button">削除</button>
           </div>
@@ -555,7 +560,6 @@
     const video = document.getElementById("video");
     const boardVideo = document.getElementById("boardVideo");
     const videoInput = document.getElementById("videoInput");
-    const videoUrl = document.getElementById("videoUrl");
     const seek = document.getElementById("seek");
     const status = document.getElementById("status");
     const noteText = document.getElementById("noteText");
@@ -656,7 +660,7 @@
 
     function createArrow(x1, y1, x2, y2) {
       const arrow = document.createElement("div");
-      arrow.className = `arrow ${state.arrowType === "dribble" ? "dribble" : "pass"}`;
+      arrow.className = `arrow ${state.arrowType}`;
       arrow.dataset.kind = "arrow";
       arrow.dataset.type = state.arrowType;
       arrow.dataset.x1 = x1;
@@ -746,8 +750,10 @@
       state.arrowMode = shouldTurnOn;
       document.getElementById("arrowTool").classList.remove("active");
       document.getElementById("dribbleTool").classList.remove("active");
+      document.getElementById("shotTool").classList.remove("active");
       button.classList.toggle("active", state.arrowMode);
-      const name = type === "dribble" ? "ドリブル" : "パス矢印";
+      const names = { pass: "パス矢印", dribble: "ドリブル", shot: "シュート" };
+      const name = names[type] || "矢印";
       setStatus(state.arrowMode ? `${name}: ボード上でドラッグしてください。` : "矢印モードを終了しました。");
     }
 
@@ -755,19 +761,6 @@
       const file = videoInput.files && videoInput.files[0];
       if (!file) return;
       setVideoSource(URL.createObjectURL(file), file.name);
-    });
-
-    document.getElementById("loadUrl").addEventListener("click", () => {
-      const url = videoUrl.value.trim();
-      if (!url) {
-        setStatus("動画URLを入力してください。");
-        return;
-      }
-      if (/youtube\.com|youtu\.be/.test(url)) {
-        setStatus("YouTubeは直接フレーム化できません。MP4/MOVの直リンクなら読み込めます。");
-        return;
-      }
-      setVideoSource(url, "URL動画を読み込みました。");
     });
 
     video.addEventListener("timeupdate", () => {
@@ -804,6 +797,7 @@
     document.getElementById("resetPieces").addEventListener("click", resetPieces);
     document.getElementById("arrowTool").addEventListener("click", (event) => setArrowTool("pass", event.currentTarget));
     document.getElementById("dribbleTool").addEventListener("click", (event) => setArrowTool("dribble", event.currentTarget));
+    document.getElementById("shotTool").addEventListener("click", (event) => setArrowTool("shot", event.currentTarget));
 
     document.getElementById("deleteSelected").addEventListener("click", () => {
       if (!state.selected) return;
