@@ -20,9 +20,7 @@
       --yellow: #f2c94c;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -32,11 +30,7 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
+    button, input, textarea { font: inherit; }
 
     button {
       border: 1px solid var(--line);
@@ -46,17 +40,15 @@
       min-height: 48px;
       padding: 0 14px;
       cursor: pointer;
+      font-weight: 700;
     }
 
-    button:hover {
-      border-color: var(--accent);
-    }
+    button:hover { border-color: var(--accent); }
 
     button.primary {
       border-color: var(--accent);
       background: var(--accent);
       color: #111;
-      font-weight: 700;
     }
 
     button.active {
@@ -73,7 +65,7 @@
     aside {
       border-right: 1px solid var(--line);
       background: var(--panel);
-      padding: 18px;
+      padding: 16px;
       overflow: auto;
     }
 
@@ -116,7 +108,7 @@
     .section-title {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: .08em;
       margin-bottom: 10px;
       text-transform: uppercase;
@@ -150,6 +142,21 @@
       max-width: 100%;
       margin-top: 8px;
       color: var(--muted);
+    }
+
+    .url-load {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .url-load input {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #11151a;
+      color: var(--text);
+      padding: 0 10px;
     }
 
     .video-box {
@@ -186,9 +193,7 @@
       gap: 8px;
     }
 
-    .tool-grid button {
-      padding: 0 8px;
-    }
+    .tool-grid button { padding: 0 8px; }
 
     .note-box {
       width: 100%;
@@ -251,6 +256,7 @@
       inset: 8%;
       border: 2px solid rgba(255, 255, 255, .72);
       pointer-events: none;
+      z-index: 2;
     }
 
     .board::after {
@@ -261,6 +267,26 @@
       left: 50%;
       border-left: 2px solid rgba(255, 255, 255, .72);
       pointer-events: none;
+      z-index: 2;
+    }
+
+    .board-video {
+      position: absolute;
+      inset: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .board.video-live {
+      background-image: none !important;
+    }
+
+    .board.video-live .board-video {
+      display: block;
     }
 
     .center-circle {
@@ -274,6 +300,7 @@
       border-radius: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
+      z-index: 2;
     }
 
     .goal {
@@ -283,6 +310,7 @@
       height: 22%;
       border: 2px solid rgba(255, 255, 255, .72);
       pointer-events: none;
+      z-index: 2;
     }
 
     .goal.left {
@@ -313,17 +341,9 @@
       z-index: 10;
     }
 
-    .piece:active {
-      cursor: grabbing;
-    }
-
-    .piece.home {
-      background: var(--blue);
-    }
-
-    .piece.away {
-      background: var(--red);
-    }
+    .piece:active { cursor: grabbing; }
+    .piece.home { background: var(--blue); }
+    .piece.away { background: var(--red); }
 
     .piece.ball {
       width: 30px;
@@ -334,9 +354,7 @@
       text-shadow: none;
     }
 
-    .piece.selected {
-      box-shadow: 0 0 0 4px rgba(255, 122, 26, .5);
-    }
+    .piece.selected { box-shadow: 0 0 0 4px rgba(255, 122, 26, .5); }
 
     .arrow {
       position: absolute;
@@ -347,6 +365,11 @@
       z-index: 8;
       pointer-events: auto;
       cursor: pointer;
+    }
+
+    .arrow.dribble {
+      background: repeating-linear-gradient(90deg, var(--green) 0 12px, transparent 12px 20px);
+      height: 6px;
     }
 
     .arrow::after {
@@ -361,6 +384,8 @@
       border-left: 14px solid var(--yellow);
       transform: translateY(-50%);
     }
+
+    .arrow.dribble::after { border-left-color: var(--green); }
 
     .label {
       position: absolute;
@@ -393,9 +418,7 @@
     }
 
     @media (hover: none) and (pointer: coarse) {
-      button {
-        min-height: 54px;
-      }
+      button { min-height: 54px; }
 
       .piece {
         width: 48px;
@@ -415,52 +438,33 @@
     }
 
     @media (max-width: 980px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      aside {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .brand,
-      .video-box,
-      .hint {
-        display: none;
-      }
+      .app { grid-template-columns: 1fr; }
 
       aside {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
       }
+
+      .brand, .video-box, .hint { display: none; }
 
       .section {
         border-top: 0;
         padding: 0;
       }
 
-      .board-wrap {
-        padding: 10px;
-      }
+      .board-wrap { padding: 10px; }
 
       .board {
         width: min(100%, 980px);
         min-height: 420px;
       }
-
-      .piece {
-        width: 36px;
-        height: 36px;
-        font-size: 12px;
-      }
     }
 
     @media (max-width: 720px) {
-      aside {
-        grid-template-columns: 1fr;
-      }
+      aside { grid-template-columns: 1fr; }
 
       .topbar {
         align-items: stretch;
@@ -474,7 +478,7 @@
     <aside>
       <div class="brand">
         <h1>REVIEW BOARD</h1>
-        <span class="tag">v0.1</span>
+        <span class="tag">v0.2</span>
       </div>
 
       <div class="section">
@@ -484,6 +488,10 @@
             動画を選択
             <input id="videoInput" type="file" accept="video/*">
           </label>
+          <div class="url-load">
+            <input id="videoUrl" type="url" inputmode="url" placeholder="動画URL / PULSE ECHOの直リンク">
+            <button id="loadUrl" type="button">読込</button>
+          </div>
           <div class="video-box">
             <video id="video" controls playsinline></video>
           </div>
@@ -494,7 +502,7 @@
           </div>
           <div class="row">
             <button id="captureFrame" class="primary" type="button">この場面を背景にする</button>
-            <button id="clearFrame" type="button">背景OFF</button>
+            <button id="clearFrame" type="button">動画に戻す</button>
           </div>
         </div>
       </div>
@@ -506,34 +514,31 @@
             <button id="addHome" type="button">味方</button>
             <button id="addAway" type="button">相手</button>
             <button id="addBall" type="button">ボール</button>
-            <button id="arrowTool" type="button">矢印</button>
+            <button id="arrowTool" type="button">パス矢印</button>
+            <button id="dribbleTool" type="button">ドリブル</button>
             <button id="addLabel" type="button">メモ</button>
             <button id="deleteSelected" type="button">削除</button>
           </div>
           <textarea id="noteText" class="note-box" placeholder="ここはこうして欲しい / 寄せる / 受け渡し"></textarea>
           <div class="row">
             <button id="resetPieces" type="button">初期配置</button>
-            <button id="savePng" class="primary" type="button">PNG保存</button>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <p class="hint">動画を確認したい場面で止めて背景化し、その上に選手・ボール・矢印・メモを置けます。タブレット横向きで、指で動かしながら説明する想定です。</p>
+        <p class="hint">動画を確認したい場面で止めて静止画化し、その上に選手・ボール・矢印・メモを置けます。「動画に戻す」で配置を残したまま再生に戻ります。</p>
       </div>
     </aside>
 
     <main>
       <div class="topbar">
         <div id="status" class="status">動画を読み込むか、そのままレビュー用ボードとして使えます。</div>
-        <div class="row">
-          <button id="fitCourt" type="button">コート表示</button>
-          <button id="fitFrame" type="button">映像表示</button>
-        </div>
       </div>
 
       <div class="board-wrap">
         <div id="board" class="board" aria-label="review board">
+          <video id="boardVideo" class="board-video" muted playsinline></video>
           <div class="center-circle"></div>
           <div class="goal left"></div>
           <div class="goal right"></div>
@@ -543,26 +548,26 @@
   </div>
 
   <canvas id="frameCanvas" hidden></canvas>
-  <canvas id="exportCanvas" hidden></canvas>
 
   <script>
     const board = document.getElementById("board");
     const video = document.getElementById("video");
+    const boardVideo = document.getElementById("boardVideo");
     const videoInput = document.getElementById("videoInput");
+    const videoUrl = document.getElementById("videoUrl");
     const seek = document.getElementById("seek");
     const status = document.getElementById("status");
     const noteText = document.getElementById("noteText");
     const frameCanvas = document.getElementById("frameCanvas");
-    const exportCanvas = document.getElementById("exportCanvas");
 
     const state = {
       selected: null,
       drag: null,
       arrowMode: false,
+      arrowType: "pass",
       arrowDraft: null,
       pieceCounts: { home: 0, away: 0, ball: 0 },
-      frameDataUrl: "",
-      frameFit: "cover"
+      frameDataUrl: ""
     };
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -587,10 +592,22 @@
       };
     }
 
+    function percentFromBoardPoint(point) {
+      return {
+        x: point.x / point.rect.width * 100,
+        y: point.y / point.rect.height * 100
+      };
+    }
+
     function setSelected(element) {
       if (state.selected) state.selected.classList.remove("selected");
       state.selected = element;
       if (state.selected) state.selected.classList.add("selected");
+    }
+
+    function placePercent(element) {
+      element.style.left = `${element.dataset.x}%`;
+      element.style.top = `${element.dataset.y}%`;
     }
 
     function createPiece(type, x = 50, y = 50) {
@@ -619,24 +636,6 @@
       return label;
     }
 
-    function createArrow(x1, y1, x2, y2) {
-      const arrow = document.createElement("div");
-      arrow.className = "arrow";
-      arrow.dataset.kind = "arrow";
-      arrow.dataset.x1 = x1;
-      arrow.dataset.y1 = y1;
-      arrow.dataset.x2 = x2;
-      arrow.dataset.y2 = y2;
-      board.appendChild(arrow);
-      placeArrow(arrow);
-      return arrow;
-    }
-
-    function placePercent(element) {
-      element.style.left = `${element.dataset.x}%`;
-      element.style.top = `${element.dataset.y}%`;
-    }
-
     function placeArrow(arrow) {
       const width = board.clientWidth;
       const height = board.clientHeight;
@@ -654,18 +653,39 @@
       arrow.style.transform = `rotate(${angle}deg)`;
     }
 
+    function createArrow(x1, y1, x2, y2) {
+      const arrow = document.createElement("div");
+      arrow.className = `arrow ${state.arrowType === "dribble" ? "dribble" : "pass"}`;
+      arrow.dataset.kind = "arrow";
+      arrow.dataset.type = state.arrowType;
+      arrow.dataset.x1 = x1;
+      arrow.dataset.y1 = y1;
+      arrow.dataset.x2 = x2;
+      arrow.dataset.y2 = y2;
+      board.appendChild(arrow);
+      placeArrow(arrow);
+      return arrow;
+    }
+
     function resetPieces() {
       board.querySelectorAll(".piece,.label,.arrow").forEach((item) => item.remove());
       state.pieceCounts = { home: 0, away: 0, ball: 0 };
       setSelected(null);
-      [
-        [28, 28], [38, 42], [38, 58], [54, 36], [54, 64]
-      ].forEach(([x, y]) => createPiece("home", x, y));
-      [
-        [72, 28], [62, 42], [62, 58], [48, 36], [48, 64]
-      ].forEach(([x, y]) => createPiece("away", x, y));
+      [[28, 28], [38, 42], [38, 58], [54, 34], [54, 64], [44, 76]].forEach(([x, y]) => createPiece("home", x, y));
+      [[72, 28], [62, 42], [62, 58], [48, 36], [48, 64]].forEach(([x, y]) => createPiece("away", x, y));
       createPiece("ball", 50, 50);
       setStatus("初期配置を作りました。");
+    }
+
+    function setVideoSource(src, label) {
+      video.src = src;
+      boardVideo.src = src;
+      boardVideo.muted = true;
+      video.load();
+      boardVideo.load();
+      board.classList.add("video-live");
+      board.classList.remove("has-frame");
+      setStatus(label || "動画を読み込みました。");
     }
 
     function captureFrame() {
@@ -679,8 +699,9 @@
       const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       state.frameDataUrl = canvas.toDataURL("image/png");
+      board.classList.remove("video-live");
       board.style.backgroundImage = `url("${state.frameDataUrl}")`;
-      board.style.backgroundSize = state.frameFit;
+      board.style.backgroundSize = "cover";
       board.style.backgroundPosition = "center";
       board.classList.add("has-frame");
       setStatus(`背景にしました: ${formatTime(video.currentTime)}`);
@@ -690,7 +711,14 @@
       state.frameDataUrl = "";
       board.style.backgroundImage = "";
       board.classList.remove("has-frame");
-      setStatus("背景を外しました。");
+      board.classList.add("video-live");
+      if (video.src) {
+        boardVideo.currentTime = video.currentTime || 0;
+        if (!video.paused) boardVideo.play().catch(() => {});
+        setStatus("動画背景に戻しました。");
+      } else {
+        setStatus("静止画背景を外しました。");
+      }
     }
 
     function formatTime(seconds) {
@@ -711,165 +739,49 @@
       video.currentTime = clamp(video.currentTime + direction / 30, 0, video.duration);
     }
 
-    function percentFromBoardPoint(point) {
-      return {
-        x: point.x / point.rect.width * 100,
-        y: point.y / point.rect.height * 100
-      };
-    }
-
-    function drawBoardLines(ctx, width, height) {
-      ctx.save();
-      ctx.strokeStyle = "rgba(255,255,255,.78)";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(width * .08, height * .08, width * .84, height * .84);
-      ctx.beginPath();
-      ctx.moveTo(width * .5, height * .08);
-      ctx.lineTo(width * .5, height * .92);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(width * .5, height * .5, width * .095, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.strokeRect(width * .08, height * .39, width * .06, height * .22);
-      ctx.strokeRect(width * .86, height * .39, width * .06, height * .22);
-      ctx.restore();
-    }
-
-    function drawPiece(ctx, element, width, height) {
-      const x = Number(element.dataset.x) / 100 * width;
-      const y = Number(element.dataset.y) / 100 * height;
-      const type = element.dataset.type;
-      const radius = type === "ball" ? 15 : 21;
-      const fill = type === "home" ? "#2f80ed" : type === "away" ? "#eb5757" : "#f7f7f2";
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = fill;
-      ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#fff";
-      ctx.stroke();
-      ctx.fillStyle = type === "ball" ? "#111" : "#fff";
-      ctx.font = "700 16px system-ui, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(element.textContent, x, y);
-      ctx.restore();
-    }
-
-    function drawArrow(ctx, element, width, height) {
-      const x1 = Number(element.dataset.x1) / 100 * width;
-      const y1 = Number(element.dataset.y1) / 100 * height;
-      const x2 = Number(element.dataset.x2) / 100 * width;
-      const y2 = Number(element.dataset.y2) / 100 * height;
-      const angle = Math.atan2(y2 - y1, x2 - x1);
-      ctx.save();
-      ctx.strokeStyle = "#f2c94c";
-      ctx.fillStyle = "#f2c94c";
-      ctx.lineWidth = 6;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
-      ctx.translate(x2, y2);
-      ctx.rotate(angle);
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(-18, -10);
-      ctx.lineTo(-18, 10);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawLabel(ctx, element, width, height) {
-      const x = Number(element.dataset.x) / 100 * width;
-      const y = Number(element.dataset.y) / 100 * height;
-      const text = element.textContent;
-      const lines = text.split("\n").slice(0, 5);
-      const boxWidth = Math.min(280, Math.max(140, Math.max(...lines.map((line) => line.length)) * 15));
-      const boxHeight = 26 + lines.length * 20;
-      ctx.save();
-      ctx.fillStyle = "rgba(0,0,0,.72)";
-      ctx.strokeStyle = "rgba(255,255,255,.55)";
-      ctx.lineWidth = 1;
-      roundRect(ctx, x - boxWidth / 2, y - boxHeight / 2, boxWidth, boxHeight, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = "#fff";
-      ctx.font = "15px system-ui, sans-serif";
-      ctx.textAlign = "left";
-      ctx.textBaseline = "top";
-      lines.forEach((line, index) => {
-        ctx.fillText(line, x - boxWidth / 2 + 12, y - boxHeight / 2 + 12 + index * 20);
-      });
-      ctx.restore();
-    }
-
-    function roundRect(ctx, x, y, width, height, radius) {
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.arcTo(x + width, y, x + width, y + height, radius);
-      ctx.arcTo(x + width, y + height, x, y + height, radius);
-      ctx.arcTo(x, y + height, x, y, radius);
-      ctx.arcTo(x, y, x + width, y, radius);
-      ctx.closePath();
-    }
-
-    function drawExportBase(ctx, width, height, done) {
-      if (state.frameDataUrl) {
-        const img = new Image();
-        img.onload = () => {
-          const scale = state.frameFit === "contain"
-            ? Math.min(width / img.width, height / img.height)
-            : Math.max(width / img.width, height / img.height);
-          const drawWidth = img.width * scale;
-          const drawHeight = img.height * scale;
-          ctx.drawImage(img, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
-          ctx.fillStyle = "rgba(0,0,0,.08)";
-          ctx.fillRect(0, 0, width, height);
-          done();
-        };
-        img.src = state.frameDataUrl;
-      } else {
-        const stripeWidth = width / 10;
-        for (let i = 0; i < 10; i += 1) {
-          ctx.fillStyle = i % 2 ? "#1e653e" : "#237044";
-          ctx.fillRect(i * stripeWidth, 0, stripeWidth, height);
-        }
-        done();
-      }
-    }
-
-    function savePng() {
-      const width = 1600;
-      const height = 900;
-      exportCanvas.width = width;
-      exportCanvas.height = height;
-      const ctx = exportCanvas.getContext("2d");
-      drawExportBase(ctx, width, height, () => {
-        drawBoardLines(ctx, width, height);
-        board.querySelectorAll(".arrow").forEach((item) => drawArrow(ctx, item, width, height));
-        board.querySelectorAll(".piece").forEach((item) => drawPiece(ctx, item, width, height));
-        board.querySelectorAll(".label").forEach((item) => drawLabel(ctx, item, width, height));
-        const link = document.createElement("a");
-        link.download = `review-board-${Date.now()}.png`;
-        link.href = exportCanvas.toDataURL("image/png");
-        link.click();
-        setStatus("PNGを書き出しました。");
-      });
+    function setArrowTool(type, button) {
+      const shouldTurnOn = !state.arrowMode || state.arrowType !== type;
+      state.arrowType = type;
+      state.arrowMode = shouldTurnOn;
+      document.getElementById("arrowTool").classList.remove("active");
+      document.getElementById("dribbleTool").classList.remove("active");
+      button.classList.toggle("active", state.arrowMode);
+      const name = type === "dribble" ? "ドリブル" : "パス矢印";
+      setStatus(state.arrowMode ? `${name}: ボード上でドラッグしてください。` : "矢印モードを終了しました。");
     }
 
     videoInput.addEventListener("change", () => {
       const file = videoInput.files && videoInput.files[0];
       if (!file) return;
-      video.src = URL.createObjectURL(file);
-      video.load();
-      setStatus(file.name);
+      setVideoSource(URL.createObjectURL(file), file.name);
     });
 
-    video.addEventListener("timeupdate", syncSeek);
+    document.getElementById("loadUrl").addEventListener("click", () => {
+      const url = videoUrl.value.trim();
+      if (!url) {
+        setStatus("動画URLを入力してください。");
+        return;
+      }
+      if (/youtube\.com|youtu\.be/.test(url)) {
+        setStatus("YouTubeは直接フレーム化できません。MP4/MOVの直リンクなら読み込めます。");
+        return;
+      }
+      setVideoSource(url, "URL動画を読み込みました。");
+    });
+
+    video.addEventListener("timeupdate", () => {
+      syncSeek();
+      if (board.classList.contains("video-live") && Math.abs(boardVideo.currentTime - video.currentTime) > .25) {
+        boardVideo.currentTime = video.currentTime;
+      }
+    });
+    video.addEventListener("play", () => {
+      if (board.classList.contains("video-live")) boardVideo.play().catch(() => {});
+    });
+    video.addEventListener("pause", () => boardVideo.pause());
+    video.addEventListener("seeking", () => {
+      if (boardVideo.readyState) boardVideo.currentTime = video.currentTime;
+    });
     video.addEventListener("loadedmetadata", () => {
       syncSeek();
       setStatus(`動画読み込み完了: ${formatTime(video.duration)}`);
@@ -889,24 +801,8 @@
     document.getElementById("addBall").addEventListener("click", () => setSelected(createPiece("ball", 50, 50)));
     document.getElementById("addLabel").addEventListener("click", () => setSelected(createLabel(noteText.value.trim(), 50, 50)));
     document.getElementById("resetPieces").addEventListener("click", resetPieces);
-    document.getElementById("savePng").addEventListener("click", savePng);
-    document.getElementById("fitCourt").addEventListener("click", () => {
-      state.frameFit = "contain";
-      board.style.backgroundSize = "contain";
-      board.style.backgroundRepeat = "no-repeat";
-      setStatus("映像を全体表示にしました。");
-    });
-    document.getElementById("fitFrame").addEventListener("click", () => {
-      state.frameFit = "cover";
-      board.style.backgroundSize = "cover";
-      setStatus("映像を画面いっぱいにしました。");
-    });
-
-    document.getElementById("arrowTool").addEventListener("click", (event) => {
-      state.arrowMode = !state.arrowMode;
-      event.currentTarget.classList.toggle("active", state.arrowMode);
-      setStatus(state.arrowMode ? "矢印モード: ボード上でドラッグしてください。" : "矢印モードを終了しました。");
-    });
+    document.getElementById("arrowTool").addEventListener("click", (event) => setArrowTool("pass", event.currentTarget));
+    document.getElementById("dribbleTool").addEventListener("click", (event) => setArrowTool("dribble", event.currentTarget));
 
     document.getElementById("deleteSelected").addEventListener("click", () => {
       if (!state.selected) return;
@@ -934,10 +830,7 @@
       }
 
       setSelected(target);
-      state.drag = {
-        element: target,
-        pointerId: event.pointerId
-      };
+      state.drag = { element: target, pointerId: event.pointerId };
       board.setPointerCapture(event.pointerId);
     });
 
