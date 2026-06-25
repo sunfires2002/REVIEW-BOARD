@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>REVIEW BOARD</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101214;
+      --panel: #191d22;
+      --panel-2: #212730;
+      --line: #343d49;
+      --text: #f4f7fb;
+      --muted: #aeb8c5;
+      --accent: #ff7a1a;
+      --blue: #2f80ed;
+      --red: #eb5757;
+      --green: #27ae60;
+      --yellow: #f2c94c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 8px;
+      min-height: 48px;
+      padding: 0 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #111;
+      font-weight: 700;
+    }
+
+    button.active {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+      overflow: auto;
+    }
+
+    main {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .tag {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .section {
+      border-top: 1px solid var(--line);
+      padding: 16px 0;
+    }
+
+    .section:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .section-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .file {
+      display: block;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: #14181d;
+    }
+
+    .file input {
+      display: block;
+      max-width: 100%;
+      margin-top: 8px;
+      color: var(--muted);
+    }
+
+    .video-box {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #050607;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      max-height: 230px;
+      background: #050607;
+    }
+
+    .timebar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .tool-grid button {
+      padding: 0 8px;
+    }
+
+    .note-box {
+      width: 100%;
+      min-height: 82px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #11151a;
+      color: var(--text);
+      padding: 10px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 16px;
+      background: #111418;
+    }
+
+    .status {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .board-wrap {
+      min-height: 0;
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .board {
+      position: relative;
+      width: min(100%, 1120px);
+      aspect-ratio: 16 / 9;
+      min-height: 360px;
+      margin: 0 auto;
+      border: 2px solid #f2f5f8;
+      background:
+        linear-gradient(rgba(20, 28, 24, .36), rgba(20, 28, 24, .36)),
+        repeating-linear-gradient(90deg, #237044 0 10%, #1e653e 10% 20%);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .board.has-frame {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .board::before {
+      content: "";
+      position: absolute;
+      inset: 8%;
+      border: 2px solid rgba(255, 255, 255, .72);
+      pointer-events: none;
+    }
+
+    .board::after {
+      content: "";
+      position: absolute;
+      top: 8%;
+      bottom: 8%;
+      left: 50%;
+      border-left: 2px solid rgba(255, 255, 255, .72);
+      pointer-events: none;
+    }
+
+    .center-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 19%;
+      height: 33.8%;
+      aspect-ratio: 1;
+      border: 2px solid rgba(255, 255, 255, .72);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .goal {
+      position: absolute;
+      top: 39%;
+      width: 6%;
+      height: 22%;
+      border: 2px solid rgba(255, 255, 255, .72);
+      pointer-events: none;
+    }
+
+    .goal.left {
+      left: 8%;
+      border-left: 0;
+    }
+
+    .goal.right {
+      right: 8%;
+      border-right: 0;
+    }
+
+    .piece {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 2px solid rgba(255, 255, 255, .95);
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, .55);
+      transform: translate(-50%, -50%);
+      user-select: none;
+      cursor: grab;
+      z-index: 10;
+    }
+
+    .piece:active {
+      cursor: grabbing;
+    }
+
+    .piece.home {
+      background: var(--blue);
+    }
+
+    .piece.away {
+      background: var(--red);
+    }
+
+    .piece.ball {
+      width: 30px;
+      height: 30px;
+      background: #f7f7f2;
+      color: #111;
+      font-size: 15px;
+      text-shadow: none;
+    }
+
+    .piece.selected {
+      box-shadow: 0 0 0 4px rgba(255, 122, 26, .5);
+    }
+
+    .arrow {
+      position: absolute;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--yellow);
+      transform-origin: 0 50%;
+      z-index: 8;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 14px solid var(--yellow);
+      transform: translateY(-50%);
+    }
+
+    .label {
+      position: absolute;
+      min-width: 120px;
+      max-width: 240px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 255, 255, .4);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, .68);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.35;
+      transform: translate(-50%, -50%);
+      z-index: 12;
+      cursor: move;
+      user-select: none;
+      white-space: pre-wrap;
+    }
+
+    .label.selected {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      button {
+        min-height: 54px;
+      }
+
+      .piece {
+        width: 48px;
+        height: 48px;
+        font-size: 15px;
+      }
+
+      .piece.ball {
+        width: 36px;
+        height: 36px;
+      }
+
+      .label {
+        min-width: 150px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand,
+      .video-box,
+      .hint {
+        display: none;
+      }
+
+      aside {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .section {
+        border-top: 0;
+        padding: 0;
+      }
+
+      .board-wrap {
+        padding: 10px;
+      }
+
+      .board {
+        width: min(100%, 980px);
+        min-height: 420px;
+      }
+
+      .piece {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      aside {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <h1>REVIEW BOARD</h1>
+        <span class="tag">v0.1</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Video</div>
+        <div class="stack">
+          <label class="file">
+            動画を選択
+            <input id="videoInput" type="file" accept="video/*">
+          </label>
+          <div class="video-box">
+            <video id="video" controls playsinline></video>
+          </div>
+          <div class="timebar">
+            <button id="backFrame" type="button">-1F</button>
+            <input id="seek" type="range" min="0" max="1000" value="0">
+            <button id="forwardFrame" type="button">+1F</button>
+          </div>
+          <div class="row">
+            <button id="captureFrame" class="primary" type="button">この場面を背景にする</button>
+            <button id="clearFrame" type="button">背景OFF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Review</div>
+        <div class="stack">
+          <div class="tool-grid">
+            <button id="addHome" type="button">味方</button>
+            <button id="addAway" type="button">相手</button>
+            <button id="addBall" type="button">ボール</button>
+            <button id="arrowTool" type="button">矢印</button>
+            <button id="addLabel" type="button">メモ</button>
+            <button id="deleteSelected" type="button">削除</button>
+          </div>
+          <textarea id="noteText" class="note-box" placeholder="ここはこうして欲しい / 寄せる / 受け渡し"></textarea>
+          <div class="row">
+            <button id="resetPieces" type="button">初期配置</button>
+            <button id="savePng" class="primary" type="button">PNG保存</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <p class="hint">動画を確認したい場面で止めて背景化し、その上に選手・ボール・矢印・メモを置けます。タブレット横向きで、指で動かしながら説明する想定です。</p>
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div id="status" class="status">動画を読み込むか、そのままレビュー用ボードとして使えます。</div>
+        <div class="row">
+          <button id="fitCourt" type="button">コート表示</button>
+          <button id="fitFrame" type="button">映像表示</button>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <div id="board" class="board" aria-label="review board">
+          <div class="center-circle"></div>
+          <div class="goal left"></div>
+          <div class="goal right"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <canvas id="frameCanvas" hidden></canvas>
+  <canvas id="exportCanvas" hidden></canvas>
+
+  <script>
+    const board = document.getElementById("board");
+    const video = document.getElementById("video");
+    const videoInput = document.getElementById("videoInput");
+    const seek = document.getElementById("seek");
+    const status = document.getElementById("status");
+    const noteText = document.getElementById("noteText");
+    const frameCanvas = document.getElementById("frameCanvas");
+    const exportCanvas = document.getElementById("exportCanvas");
+
+    const state = {
+      selected: null,
+      drag: null,
+      arrowMode: false,
+      arrowDraft: null,
+      pieceCounts: { home: 0, away: 0, ball: 0 },
+      frameDataUrl: "",
+      frameFit: "cover"
+    };
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    function setStatus(message) {
+      status.textContent = message;
+    }
+
+    function sizeBoardForOlderTablet() {
+      if (window.CSS && CSS.supports && CSS.supports("aspect-ratio", "16 / 9")) return;
+      const width = board.clientWidth;
+      if (!width) return;
+      board.style.height = `${Math.round(width * 9 / 16)}px`;
+    }
+
+    function boardPoint(event) {
+      const rect = board.getBoundingClientRect();
+      return {
+        x: clamp(event.clientX - rect.left, 0, rect.width),
+        y: clamp(event.clientY - rect.top, 0, rect.height),
+        rect
+      };
+    }
+
+    function setSelected(element) {
+      if (state.selected) state.selected.classList.remove("selected");
+      state.selected = element;
+      if (state.selected) state.selected.classList.add("selected");
+    }
+
+    function createPiece(type, x = 50, y = 50) {
+      state.pieceCounts[type] += 1;
+      const piece = document.createElement("div");
+      piece.className = `piece ${type}`;
+      piece.dataset.kind = "piece";
+      piece.dataset.type = type;
+      piece.dataset.x = x;
+      piece.dataset.y = y;
+      piece.textContent = type === "ball" ? "●" : state.pieceCounts[type];
+      board.appendChild(piece);
+      placePercent(piece);
+      return piece;
+    }
+
+    function createLabel(text, x = 50, y = 50) {
+      const label = document.createElement("div");
+      label.className = "label";
+      label.dataset.kind = "label";
+      label.dataset.x = x;
+      label.dataset.y = y;
+      label.textContent = text || "ここはこうして欲しい";
+      board.appendChild(label);
+      placePercent(label);
+      return label;
+    }
+
+    function createArrow(x1, y1, x2, y2) {
+      const arrow = document.createElement("div");
+      arrow.className = "arrow";
+      arrow.dataset.kind = "arrow";
+      arrow.dataset.x1 = x1;
+      arrow.dataset.y1 = y1;
+      arrow.dataset.x2 = x2;
+      arrow.dataset.y2 = y2;
+      board.appendChild(arrow);
+      placeArrow(arrow);
+      return arrow;
+    }
+
+    function placePercent(element) {
+      element.style.left = `${element.dataset.x}%`;
+      element.style.top = `${element.dataset.y}%`;
+    }
+
+    function placeArrow(arrow) {
+      const width = board.clientWidth;
+      const height = board.clientHeight;
+      const x1 = Number(arrow.dataset.x1) / 100 * width;
+      const y1 = Number(arrow.dataset.y1) / 100 * height;
+      const x2 = Number(arrow.dataset.x2) / 100 * width;
+      const y2 = Number(arrow.dataset.y2) / 100 * height;
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const length = Math.hypot(dx, dy);
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      arrow.style.left = `${x1}px`;
+      arrow.style.top = `${y1}px`;
+      arrow.style.width = `${Math.max(18, length)}px`;
+      arrow.style.transform = `rotate(${angle}deg)`;
+    }
+
+    function resetPieces() {
+      board.querySelectorAll(".piece,.label,.arrow").forEach((item) => item.remove());
+      state.pieceCounts = { home: 0, away: 0, ball: 0 };
+      setSelected(null);
+      [
+        [28, 28], [38, 42], [38, 58], [54, 36], [54, 64]
+      ].forEach(([x, y]) => createPiece("home", x, y));
+      [
+        [72, 28], [62, 42], [62, 58], [48, 36], [48, 64]
+      ].forEach(([x, y]) => createPiece("away", x, y));
+      createPiece("ball", 50, 50);
+      setStatus("初期配置を作りました。");
+    }
+
+    function captureFrame() {
+      if (!video.videoWidth || !video.videoHeight) {
+        setStatus("先に動画を読み込んでください。");
+        return;
+      }
+      const canvas = frameCanvas;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      state.frameDataUrl = canvas.toDataURL("image/png");
+      board.style.backgroundImage = `url("${state.frameDataUrl}")`;
+      board.style.backgroundSize = state.frameFit;
+      board.style.backgroundPosition = "center";
+      board.classList.add("has-frame");
+      setStatus(`背景にしました: ${formatTime(video.currentTime)}`);
+    }
+
+    function clearFrame() {
+      state.frameDataUrl = "";
+      board.style.backgroundImage = "";
+      board.classList.remove("has-frame");
+      setStatus("背景を外しました。");
+    }
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return "0:00.0";
+      const min = Math.floor(seconds / 60);
+      const sec = seconds - min * 60;
+      return `${min}:${sec.toFixed(1).padStart(4, "0")}`;
+    }
+
+    function syncSeek() {
+      if (!video.duration) return;
+      seek.value = String(Math.round(video.currentTime / video.duration * 1000));
+    }
+
+    function stepFrame(direction) {
+      if (!video.duration) return;
+      video.pause();
+      video.currentTime = clamp(video.currentTime + direction / 30, 0, video.duration);
+    }
+
+    function percentFromBoardPoint(point) {
+      return {
+        x: point.x / point.rect.width * 100,
+        y: point.y / point.rect.height * 100
+      };
+    }
+
+    function drawBoardLines(ctx, width, height) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,255,255,.78)";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(width * .08, height * .08, width * .84, height * .84);
+      ctx.beginPath();
+      ctx.moveTo(width * .5, height * .08);
+      ctx.lineTo(width * .5, height * .92);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(width * .5, height * .5, width * .095, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeRect(width * .08, height * .39, width * .06, height * .22);
+      ctx.strokeRect(width * .86, height * .39, width * .06, height * .22);
+      ctx.restore();
+    }
+
+    function drawPiece(ctx, element, width, height) {
+      const x = Number(element.dataset.x) / 100 * width;
+      const y = Number(element.dataset.y) / 100 * height;
+      const type = element.dataset.type;
+      const radius = type === "ball" ? 15 : 21;
+      const fill = type === "home" ? "#2f80ed" : type === "away" ? "#eb5757" : "#f7f7f2";
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
+      ctx.fillStyle = type === "ball" ? "#111" : "#fff";
+      ctx.font = "700 16px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(element.textContent, x, y);
+      ctx.restore();
+    }
+
+    function drawArrow(ctx, element, width, height) {
+      const x1 = Number(element.dataset.x1) / 100 * width;
+      const y1 = Number(element.dataset.y1) / 100 * height;
+      const x2 = Number(element.dataset.x2) / 100 * width;
+      const y2 = Number(element.dataset.y2) / 100 * height;
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      ctx.save();
+      ctx.strokeStyle = "#f2c94c";
+      ctx.fillStyle = "#f2c94c";
+      ctx.lineWidth = 6;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.translate(x2, y2);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-18, -10);
+      ctx.lineTo(-18, 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawLabel(ctx, element, width, height) {
+      const x = Number(element.dataset.x) / 100 * width;
+      const y = Number(element.dataset.y) / 100 * height;
+      const text = element.textContent;
+      const lines = text.split("\n").slice(0, 5);
+      const boxWidth = Math.min(280, Math.max(140, Math.max(...lines.map((line) => line.length)) * 15));
+      const boxHeight = 26 + lines.length * 20;
+      ctx.save();
+      ctx.fillStyle = "rgba(0,0,0,.72)";
+      ctx.strokeStyle = "rgba(255,255,255,.55)";
+      ctx.lineWidth = 1;
+      roundRect(ctx, x - boxWidth / 2, y - boxHeight / 2, boxWidth, boxHeight, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#fff";
+      ctx.font = "15px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      lines.forEach((line, index) => {
+        ctx.fillText(line, x - boxWidth / 2 + 12, y - boxHeight / 2 + 12 + index * 20);
+      });
+      ctx.restore();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + width, y, x + width, y + height, radius);
+      ctx.arcTo(x + width, y + height, x, y + height, radius);
+      ctx.arcTo(x, y + height, x, y, radius);
+      ctx.arcTo(x, y, x + width, y, radius);
+      ctx.closePath();
+    }
+
+    function drawExportBase(ctx, width, height, done) {
+      if (state.frameDataUrl) {
+        const img = new Image();
+        img.onload = () => {
+          const scale = state.frameFit === "contain"
+            ? Math.min(width / img.width, height / img.height)
+            : Math.max(width / img.width, height / img.height);
+          const drawWidth = img.width * scale;
+          const drawHeight = img.height * scale;
+          ctx.drawImage(img, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
+          ctx.fillStyle = "rgba(0,0,0,.08)";
+          ctx.fillRect(0, 0, width, height);
+          done();
+        };
+        img.src = state.frameDataUrl;
+      } else {
+        const stripeWidth = width / 10;
+        for (let i = 0; i < 10; i += 1) {
+          ctx.fillStyle = i % 2 ? "#1e653e" : "#237044";
+          ctx.fillRect(i * stripeWidth, 0, stripeWidth, height);
+        }
+        done();
+      }
+    }
+
+    function savePng() {
+      const width = 1600;
+      const height = 900;
+      exportCanvas.width = width;
+      exportCanvas.height = height;
+      const ctx = exportCanvas.getContext("2d");
+      drawExportBase(ctx, width, height, () => {
+        drawBoardLines(ctx, width, height);
+        board.querySelectorAll(".arrow").forEach((item) => drawArrow(ctx, item, width, height));
+        board.querySelectorAll(".piece").forEach((item) => drawPiece(ctx, item, width, height));
+        board.querySelectorAll(".label").forEach((item) => drawLabel(ctx, item, width, height));
+        const link = document.createElement("a");
+        link.download = `review-board-${Date.now()}.png`;
+        link.href = exportCanvas.toDataURL("image/png");
+        link.click();
+        setStatus("PNGを書き出しました。");
+      });
+    }
+
+    videoInput.addEventListener("change", () => {
+      const file = videoInput.files && videoInput.files[0];
+      if (!file) return;
+      video.src = URL.createObjectURL(file);
+      video.load();
+      setStatus(file.name);
+    });
+
+    video.addEventListener("timeupdate", syncSeek);
+    video.addEventListener("loadedmetadata", () => {
+      syncSeek();
+      setStatus(`動画読み込み完了: ${formatTime(video.duration)}`);
+    });
+
+    seek.addEventListener("input", () => {
+      if (!video.duration) return;
+      video.currentTime = Number(seek.value) / 1000 * video.duration;
+    });
+
+    document.getElementById("backFrame").addEventListener("click", () => stepFrame(-1));
+    document.getElementById("forwardFrame").addEventListener("click", () => stepFrame(1));
+    document.getElementById("captureFrame").addEventListener("click", captureFrame);
+    document.getElementById("clearFrame").addEventListener("click", clearFrame);
+    document.getElementById("addHome").addEventListener("click", () => setSelected(createPiece("home", 50, 50)));
+    document.getElementById("addAway").addEventListener("click", () => setSelected(createPiece("away", 50, 50)));
+    document.getElementById("addBall").addEventListener("click", () => setSelected(createPiece("ball", 50, 50)));
+    document.getElementById("addLabel").addEventListener("click", () => setSelected(createLabel(noteText.value.trim(), 50, 50)));
+    document.getElementById("resetPieces").addEventListener("click", resetPieces);
+    document.getElementById("savePng").addEventListener("click", savePng);
+    document.getElementById("fitCourt").addEventListener("click", () => {
+      state.frameFit = "contain";
+      board.style.backgroundSize = "contain";
+      board.style.backgroundRepeat = "no-repeat";
+      setStatus("映像を全体表示にしました。");
+    });
+    document.getElementById("fitFrame").addEventListener("click", () => {
+      state.frameFit = "cover";
+      board.style.backgroundSize = "cover";
+      setStatus("映像を画面いっぱいにしました。");
+    });
+
+    document.getElementById("arrowTool").addEventListener("click", (event) => {
+      state.arrowMode = !state.arrowMode;
+      event.currentTarget.classList.toggle("active", state.arrowMode);
+      setStatus(state.arrowMode ? "矢印モード: ボード上でドラッグしてください。" : "矢印モードを終了しました。");
+    });
+
+    document.getElementById("deleteSelected").addEventListener("click", () => {
+      if (!state.selected) return;
+      state.selected.remove();
+      state.selected = null;
+      setStatus("選択中の要素を削除しました。");
+    });
+
+    board.addEventListener("pointerdown", (event) => {
+      const target = event.target.closest(".piece,.label,.arrow");
+      const point = boardPoint(event);
+      const percent = percentFromBoardPoint(point);
+
+      if (state.arrowMode && !target) {
+        const arrow = createArrow(percent.x, percent.y, percent.x, percent.y);
+        state.arrowDraft = arrow;
+        setSelected(arrow);
+        board.setPointerCapture(event.pointerId);
+        return;
+      }
+
+      if (!target || target.classList.contains("arrow")) {
+        setSelected(target || null);
+        return;
+      }
+
+      setSelected(target);
+      state.drag = {
+        element: target,
+        pointerId: event.pointerId
+      };
+      board.setPointerCapture(event.pointerId);
+    });
+
+    board.addEventListener("pointermove", (event) => {
+      const point = boardPoint(event);
+      const percent = percentFromBoardPoint(point);
+
+      if (state.arrowDraft) {
+        state.arrowDraft.dataset.x2 = percent.x;
+        state.arrowDraft.dataset.y2 = percent.y;
+        placeArrow(state.arrowDraft);
+        return;
+      }
+
+      if (!state.drag) return;
+      state.drag.element.dataset.x = percent.x;
+      state.drag.element.dataset.y = percent.y;
+      placePercent(state.drag.element);
+    });
+
+    board.addEventListener("pointerup", (event) => {
+      if (state.arrowDraft) {
+        const length = state.arrowDraft.offsetWidth;
+        if (length < 24) state.arrowDraft.remove();
+        state.arrowDraft = null;
+      }
+      if (state.drag) {
+        board.releasePointerCapture(event.pointerId);
+        state.drag = null;
+      }
+    });
+
+    board.addEventListener("dblclick", (event) => {
+      const label = event.target.closest(".label");
+      if (!label) return;
+      const next = prompt("メモを編集", label.textContent);
+      if (next !== null) label.textContent = next.trim() || label.textContent;
+    });
+
+    window.addEventListener("resize", () => {
+      sizeBoardForOlderTablet();
+      board.querySelectorAll(".arrow").forEach(placeArrow);
+    });
+
+    resetPieces();
+    sizeBoardForOlderTablet();
+  </script>
+</body>
+</html>
